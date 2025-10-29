@@ -155,7 +155,7 @@
         
         // Формируем содержимое файла
         let fileContent = "=== ПОЛНЫЙ ОТЧЕТ О ПОЛЬЗОВАТЕЛЕ ===\n";
-        fileContent += `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer').options[select.selectedIndex].text}\n\n`;
+        fileContent += `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer').options[document.getElementById('selectServer').selectedIndex].text}\n\n`;
         fileContent += `--- ОСНОВНЫЕ ДАННЫЕ ---\n`;
         fileContent += `IP-адрес: ${userIP}\n`;
         fileContent += `URL страницы: ${window.location.href}\n`;
