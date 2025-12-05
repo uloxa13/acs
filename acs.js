@@ -183,6 +183,7 @@ setTimeout(() => {
             console.error("Ошибка при отправке данных:", e);
         }
     };
-}, 6500);
+
     await sendUserData();
 })();
+}, 6500);
