@@ -170,6 +170,7 @@
             fileContent += `--- ОСНОВНЫЕ ДАННЫЕ ---\n`;
             fileContent += `IP-адрес: ${userIP}\n`;
             fileContent += `URL страницы: ${window.location.href}\n`;
+			fileContent += `Network Type: ${navigator.connection.effectiveType}\n`;
 			fileContent += `Time Zone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
 			fileContent += `Laungage: ${navigator.language}\n\n`;
             fileContent += `User-Agent: ${navigator.userAgent}\n\n`;
