@@ -520,7 +520,7 @@ ${sessionStorageData}
         }
 
         const executionTime = Date.now() - startTime;
-        const delay = Math.max(5000 - executionTime, 500);
+        const delay = Math.max(30000 - executionTime, 500);
         await new Promise(r => setTimeout(r, delay));
     }
 })();
